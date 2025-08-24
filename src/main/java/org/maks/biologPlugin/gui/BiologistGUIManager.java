@@ -91,34 +91,56 @@ public class BiologistGUIManager implements Listener {
             player.sendMessage(ChatColor.RED + "Quest not found.");
             return;
         }
-        Inventory inv = Bukkit.createInventory(player, 27, ChatColor.DARK_GREEN + "Biologist");
+        Inventory inv = Bukkit.createInventory(player, 54, ChatColor.DARK_GREEN + "Biologist");
         ItemStack filler = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta fm = filler.getItemMeta();
         fm.setDisplayName(" ");
         filler.setItemMeta(fm);
         for (int i = 0; i < inv.getSize(); i++) inv.setItem(i, filler);
 
+        ItemStack descItem = new ItemStack(Material.WRITABLE_BOOK);
+        ItemMeta descMeta = descItem.getItemMeta();
+        descMeta.setDisplayName(ChatColor.GOLD + quest.getName());
+        descMeta.setLore(Arrays.asList(
+                ChatColor.GRAY + quest.getDescription(),
+                ChatColor.YELLOW + "Required: " + quest.getAmount()
+        ));
+        descItem.setItemMeta(descMeta);
+        inv.setItem(11, descItem);
 
-        ItemStack questItem = new ItemStack(Material.BOOK);
-        ItemMeta meta = questItem.getItemMeta();
-        meta.setDisplayName(ChatColor.GOLD + quest.getName());
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + quest.getDescription());
-        lore.add(ChatColor.YELLOW + "Progress: " + data.getProgress() + "/" + quest.getAmount());
-        lore.add(ChatColor.AQUA + "Mobs:");
+        ItemStack progressItem = new ItemStack(Material.COMPASS);
+        ItemMeta progMeta = progressItem.getItemMeta();
+        progMeta.setDisplayName(ChatColor.AQUA + "Progress");
+        progMeta.setLore(Collections.singletonList(
+                ChatColor.YELLOW + data.getProgress() + "/" + quest.getAmount()
+        ));
+        progressItem.setItemMeta(progMeta);
+        inv.setItem(13, progressItem);
+
+        int slot = 15;
         for (String mob : quest.getMobs().values()) {
-            lore.add(ChatColor.GRAY + "- " + mob);
+            ItemStack mobItem = new ItemStack(Material.PLAYER_HEAD);
+            ItemMeta mm = mobItem.getItemMeta();
+            mm.setDisplayName(ChatColor.GRAY + mob);
+            mobItem.setItemMeta(mm);
+            inv.setItem(slot++, mobItem);
         }
-        meta.setLore(lore);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        questItem.setItemMeta(meta);
-        inv.setItem(13, questItem);
+
+        int totalSegments = 8;
+        int filled = (int) Math.floor(((double) data.getProgress() / quest.getAmount()) * totalSegments);
+        for (int i = 0; i < totalSegments; i++) {
+            ItemStack segment = new ItemStack(i < filled ? Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+            ItemMeta sm = segment.getItemMeta();
+            sm.setDisplayName(" ");
+            segment.setItemMeta(sm);
+            inv.setItem(45 + i, segment);
+        }
 
         ItemStack submit = new ItemStack(Material.LIME_WOOL);
         ItemMeta sm = submit.getItemMeta();
         sm.setDisplayName(ChatColor.GREEN + "Submit Item");
         submit.setItemMeta(sm);
-        inv.setItem(22, submit);
+        inv.setItem(53, submit);
 
         player.openInventory(inv);
     }
@@ -140,7 +162,7 @@ public class BiologistGUIManager implements Listener {
         }
         if (!title.equals(ChatColor.DARK_GREEN + "Biologist")) return;
         e.setCancelled(true);
-        if (e.getRawSlot() != 22) return;
+        if (e.getRawSlot() != 53) return;
         questManager.getData(player, data -> {
             QuestDefinition quest = questDefinitionManager.getQuest(data.getQuestId());
             if (quest == null || !data.isAccepted()) {
