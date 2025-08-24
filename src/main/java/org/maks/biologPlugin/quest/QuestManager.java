@@ -88,11 +88,13 @@ public class QuestManager {
         private boolean accepted;
 
         public PlayerData(UUID uuid, String questId, int progress, long lastSubmission, boolean accepted) {
+
             this.uuid = uuid;
             this.questId = questId;
             this.progress = progress;
             this.lastSubmission = lastSubmission;
             this.accepted = accepted;
+
         }
 
         public UUID getUuid() {

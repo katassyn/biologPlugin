@@ -39,5 +39,6 @@ public class MobDropListener implements Listener {
             item.setItemMeta(meta);
             e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), item);
         });
+
     }
 }

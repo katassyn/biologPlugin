@@ -39,6 +39,7 @@ public final class BiologPlugin extends JavaPlugin {
         questDefinitionManager = new QuestDefinitionManager(this, databaseManager, config);
         Map<String, QuestDefinition> questMap = questDefinitionManager.getQuestMap();
         BiologistGUIManager guiManager = new BiologistGUIManager(questManager, questDefinitionManager);
+
         BiologistAdminGUI adminGUI = new BiologistAdminGUI(questDefinitionManager);
 
         getServer().getPluginManager().registerEvents(guiManager, this);

@@ -27,6 +27,7 @@ public class QuestDefinitionManager {
         this.plugin = plugin;
         loadQuests(config);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, this::loadRewards);
+
     }
 
     private void loadQuests(FileConfiguration config) {

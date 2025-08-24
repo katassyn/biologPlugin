@@ -99,6 +99,7 @@ public class BiologistGUIManager implements Listener {
         filler.setItemMeta(fm);
         for (int i = 0; i < inv.getSize(); i++) inv.setItem(i, filler);
 
+
         ItemStack questItem = new ItemStack(Material.BOOK);
         ItemMeta meta = questItem.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + quest.getName());
@@ -109,6 +110,7 @@ public class BiologistGUIManager implements Listener {
         for (String mob : quest.getMobs().values()) {
             lore.add(ChatColor.GRAY + "- " + mob);
         }
+
         lore.add(ChatColor.GREEN + "Submit item in slot 22");
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -116,6 +118,7 @@ public class BiologistGUIManager implements Listener {
         inv.setItem(13, questItem);
 
         inv.setItem(22, new ItemStack(Material.AIR));
+
         player.openInventory(inv);
     }
 

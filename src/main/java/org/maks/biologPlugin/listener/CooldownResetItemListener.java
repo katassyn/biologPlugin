@@ -38,6 +38,7 @@ public class CooldownResetItemListener implements Listener {
             questManager.saveData(data);
             e.getPlayer().sendMessage(ChatColor.GREEN + "Cooldown reset.");
         });
+
         item.setAmount(item.getAmount() - 1);
         e.setCancelled(true);
     }
