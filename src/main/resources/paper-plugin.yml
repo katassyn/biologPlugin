@@ -2,3 +2,8 @@ name: biologPlugin
 version: '1.0-SNAPSHOT'
 main: org.maks.biologPlugin.BiologPlugin
 api-version: '1.20'
+commands:
+  biolog:
+    description: Open biologist menu
+  biologadmin:
+    description: Edit biologist quest rewards

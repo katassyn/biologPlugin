@@ -1,0 +1,29 @@
+mysql:
+  host: localhost
+  port: 3306
+  database: biologist_db
+  username: user
+  password: pass
+
+quests:
+  quest1:
+    name: "Collect Wolf Fangs"
+    desc: "Zabij mistyczne wilki i przynieś ich kły."
+    mobs:
+      - mythic_wolf:Mystic Wolf
+      - mythic_alpha:Alpha Wolf
+    chance: 0.7
+    amount: 20
+    item_name: "Wolf Fang"
+    item_lore: "A fang destined for the Biologist"
+
+cooldown_item:
+  id: BOWL
+  display: "§6Biologist Potion"
+  enchant: DURABILITY:10
+  lore:
+    - "§o§7Right click to reset Biologist Cooldown"
+  options:
+    HideFlags: true
+    HideAttributes: true
+    Unbreakable: true
