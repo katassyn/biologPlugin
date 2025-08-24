@@ -5,6 +5,8 @@ mysql:
   username: user
   password: pass
 
+debug_drop: false
+
 quests:
   quest1:
     name: "Collect Wolf Fangs"
@@ -13,6 +15,7 @@ quests:
       - mythic_wolf:Mystic Wolf
       - mythic_alpha:Alpha Wolf
     chance: 0.7
+    drop_chance: 0.5
     amount: 20
     item_id: BONE
     item_name: "Wolf Fang"

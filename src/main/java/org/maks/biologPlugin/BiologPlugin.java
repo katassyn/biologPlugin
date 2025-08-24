@@ -49,7 +49,8 @@ public final class BiologPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(guiManager, this);
         getServer().getPluginManager().registerEvents(adminGUI, this);
-        getServer().getPluginManager().registerEvents(new MobDropListener(questManager, questMap), this);
+        boolean debugDrop = config.getBoolean("debug_drop", false);
+        getServer().getPluginManager().registerEvents(new MobDropListener(questManager, questMap, debugDrop, getLogger()), this);
 
         // Build cooldown item from config
         ItemStack cooldownItem = buildCooldownItem(config);
