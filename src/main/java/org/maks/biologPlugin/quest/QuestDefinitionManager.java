@@ -3,6 +3,7 @@ package org.maks.biologPlugin.quest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -49,9 +50,10 @@ public class QuestDefinitionManager {
             }
             double chance = qSec.getDouble("chance");
             int amount = qSec.getInt("amount");
+            Material itemMat = Material.matchMaterial(qSec.getString("item_id", "PAPER"));
             String itemName = qSec.getString("item_name", "");
             String itemLore = qSec.getString("item_lore", "");
-            QuestDefinition quest = new QuestDefinition(id, name, desc, mobs, chance, amount, itemName, itemLore);
+            QuestDefinition quest = new QuestDefinition(id, name, desc, mobs, chance, amount, itemMat, itemName, itemLore);
             quests.put(id, quest);
         }
     }

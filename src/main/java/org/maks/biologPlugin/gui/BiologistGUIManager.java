@@ -165,7 +165,7 @@ public class BiologistGUIManager implements Listener {
             }
             // validation
             ItemMeta meta = item.getItemMeta();
-            if (item.getType() != Material.PAPER || meta == null ||
+            if (item.getType() != quest.getItemMaterial() || meta == null ||
                     !meta.hasDisplayName() || !meta.getDisplayName().equals(ChatColor.GOLD + quest.getItemName()) ||
                     meta.getLore() == null || meta.getLore().isEmpty() || !meta.getLore().get(0).equals(ChatColor.GRAY + quest.getItemLore()) ||
                     !meta.hasEnchant(Enchantment.DURABILITY) || meta.getEnchantLevel(Enchantment.DURABILITY) < 10) {

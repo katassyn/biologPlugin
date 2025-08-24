@@ -1,38 +1,33 @@
 package org.maks.biologPlugin.listener;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.maks.biologPlugin.quest.QuestManager;
 
-import java.util.List;
-
+/**
+ * Listener that handles usage of the special cooldown reset item. The item is
+ * fully defined by its {@link ItemStack} including enchantments and item
+ * flags, so that only properly configured items are accepted.
+ */
 public class CooldownResetItemListener implements Listener {
     private final QuestManager questManager;
-    private final Material material;
-    private final String display;
-    private final List<String> lore;
+    private final ItemStack cooldownItem;
 
-    public CooldownResetItemListener(QuestManager questManager, Material material, String display, List<String> lore) {
+    public CooldownResetItemListener(QuestManager questManager, ItemStack cooldownItem) {
         this.questManager = questManager;
-        this.material = material;
-        this.display = display;
-        this.lore = lore;
+        this.cooldownItem = cooldownItem;
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         if (e.getHand() != EquipmentSlot.HAND) return;
         ItemStack item = e.getItem();
-        if (item == null || item.getType() != material) return;
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null || !display.equals(meta.getDisplayName())) return;
-        if (lore != null && !lore.equals(meta.getLore())) return;
+        if (item == null || !item.isSimilar(cooldownItem)) return;
+
         questManager.getData(e.getPlayer(), data -> {
             data.setLastSubmission(0);
             questManager.saveData(data);
