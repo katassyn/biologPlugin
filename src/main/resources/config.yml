@@ -14,6 +14,7 @@ quests:
       - mythic_alpha:Alpha Wolf
     chance: 0.7
     amount: 20
+    item_id: BONE
     item_name: "Wolf Fang"
     item_lore: "A fang destined for the Biologist"
 

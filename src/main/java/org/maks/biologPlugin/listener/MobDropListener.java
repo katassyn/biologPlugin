@@ -2,7 +2,6 @@ package org.maks.biologPlugin.listener;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +28,7 @@ public class MobDropListener implements Listener {
             QuestDefinition quest = quests.get(data.getQuestId());
             if (quest == null || !data.isAccepted()) return;
             if (!quest.getMobs().containsKey(e.getMobType())) return;
-            ItemStack item = new ItemStack(Material.PAPER);
+            ItemStack item = new ItemStack(quest.getItemMaterial());
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.GOLD + quest.getItemName());
             meta.setLore(java.util.Collections.singletonList(ChatColor.GRAY + quest.getItemLore()));

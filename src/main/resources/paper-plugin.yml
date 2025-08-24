@@ -5,5 +5,14 @@ api-version: '1.20'
 commands:
   biolog:
     description: Open biologist menu
+    permission: biolog.use
   biologadmin:
     description: Edit biologist quest rewards
+    permission: biolog.admin
+permissions:
+  biolog.use:
+    description: Allows using /biolog
+    default: true
+  biolog.admin:
+    description: Allows using /biologadmin
+    default: op

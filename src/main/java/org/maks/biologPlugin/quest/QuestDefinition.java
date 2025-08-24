@@ -1,5 +1,6 @@
 package org.maks.biologPlugin.quest;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -12,19 +13,21 @@ public class QuestDefinition {
     private final Map<String, String> mobs; // mythicId -> display name
     private final double chance;
     private final int amount;
+    private final Material itemMaterial;
     private final String itemName;
     private final String itemLore;
 
     private List<ItemStack> rewards;
 
     public QuestDefinition(String id, String name, String description, Map<String, String> mobs,
-                           double chance, int amount, String itemName, String itemLore) {
+                           double chance, int amount, Material itemMaterial, String itemName, String itemLore) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.mobs = mobs;
         this.chance = chance;
         this.amount = amount;
+        this.itemMaterial = itemMaterial;
         this.itemName = itemName;
         this.itemLore = itemLore;
     }
@@ -53,13 +56,11 @@ public class QuestDefinition {
         return amount;
     }
 
-    public String getItemName() {
-        return itemName;
-    }
+    public Material getItemMaterial() { return itemMaterial; }
 
-    public String getItemLore() {
-        return itemLore;
-    }
+    public String getItemName() { return itemName; }
+
+    public String getItemLore() { return itemLore; }
 
     public List<ItemStack> getRewards() {
         return rewards;
