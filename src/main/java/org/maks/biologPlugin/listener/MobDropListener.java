@@ -25,19 +25,20 @@ public class MobDropListener implements Listener {
     public void onMythicDeath(MythicMobDeathEvent e) {
         Player killer = e.getKiller();
         if (killer == null) return;
-        QuestManager.PlayerData data = questManager.getData(killer);
-        QuestDefinition quest = quests.get(data.getQuestId());
-        if (quest == null) return;
-        if (!quest.getMobs().containsKey(e.getMobType())) return;
-        // Drop quest item
-        ItemStack item = new ItemStack(Material.PAPER); // placeholder material
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.GOLD + quest.getItemName());
-        meta.setLore(java.util.Collections.singletonList(ChatColor.GRAY + quest.getItemLore()));
-        meta.addEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 10, true);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
-        meta.setUnbreakable(true);
-        item.setItemMeta(meta);
-        e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), item);
+        questManager.getData(killer, data -> {
+            QuestDefinition quest = quests.get(data.getQuestId());
+            if (quest == null || !data.isAccepted()) return;
+            if (!quest.getMobs().containsKey(e.getMobType())) return;
+            ItemStack item = new ItemStack(Material.PAPER);
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(ChatColor.GOLD + quest.getItemName());
+            meta.setLore(java.util.Collections.singletonList(ChatColor.GRAY + quest.getItemLore()));
+            meta.addEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 10, true);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+            meta.setUnbreakable(true);
+            item.setItemMeta(meta);
+            e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), item);
+        });
+
     }
 }

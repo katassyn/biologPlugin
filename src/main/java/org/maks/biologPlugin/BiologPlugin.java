@@ -35,10 +35,11 @@ public final class BiologPlugin extends JavaPlugin {
         String password = config.getString("mysql.password", "");
         databaseManager = new DatabaseManager(host, port, database, username, password);
 
-        questManager = new QuestManager(databaseManager);
-        questDefinitionManager = new QuestDefinitionManager(databaseManager, config);
+        questManager = new QuestManager(this, databaseManager);
+        questDefinitionManager = new QuestDefinitionManager(this, databaseManager, config);
         Map<String, QuestDefinition> questMap = questDefinitionManager.getQuestMap();
-        BiologistGUIManager guiManager = new BiologistGUIManager(questManager, questMap);
+        BiologistGUIManager guiManager = new BiologistGUIManager(questManager, questDefinitionManager);
+
         BiologistAdminGUI adminGUI = new BiologistAdminGUI(questDefinitionManager);
 
         getServer().getPluginManager().registerEvents(guiManager, this);

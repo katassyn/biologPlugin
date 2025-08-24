@@ -33,10 +33,12 @@ public class CooldownResetItemListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta == null || !display.equals(meta.getDisplayName())) return;
         if (lore != null && !lore.equals(meta.getLore())) return;
-        QuestManager.PlayerData data = questManager.getData(e.getPlayer());
-        data.setLastSubmission(0);
-        questManager.saveData(data);
-        e.getPlayer().sendMessage(ChatColor.GREEN + "Cooldown reset.");
+        questManager.getData(e.getPlayer(), data -> {
+            data.setLastSubmission(0);
+            questManager.saveData(data);
+            e.getPlayer().sendMessage(ChatColor.GREEN + "Cooldown reset.");
+        });
+
         item.setAmount(item.getAmount() - 1);
         e.setCancelled(true);
     }

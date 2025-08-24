@@ -2,9 +2,11 @@ package org.maks.biologPlugin.quest;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.maks.biologPlugin.db.DatabaseManager;
 
 import java.lang.reflect.Type;
@@ -15,14 +17,17 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class QuestDefinitionManager {
-    private final Map<String, QuestDefinition> quests = new HashMap<>();
+    private final LinkedHashMap<String, QuestDefinition> quests = new LinkedHashMap<>();
     private final DatabaseManager databaseManager;
     private final Gson gson = new Gson();
+    private final JavaPlugin plugin;
 
-    public QuestDefinitionManager(DatabaseManager databaseManager, FileConfiguration config) {
+    public QuestDefinitionManager(JavaPlugin plugin, DatabaseManager databaseManager, FileConfiguration config) {
         this.databaseManager = databaseManager;
+        this.plugin = plugin;
         loadQuests(config);
-        loadRewards();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, this::loadRewards);
+
     }
 
     private void loadQuests(FileConfiguration config) {
@@ -82,18 +87,35 @@ public class QuestDefinitionManager {
         return quests;
     }
 
+    public QuestDefinition getFirstQuest() {
+        return quests.values().stream().findFirst().orElse(null);
+    }
+
+    public QuestDefinition getNextQuest(String currentId) {
+        Iterator<String> it = quests.keySet().iterator();
+        while (it.hasNext()) {
+            String id = it.next();
+            if (id.equals(currentId)) {
+                return it.hasNext() ? quests.get(it.next()) : null;
+            }
+        }
+        return null;
+    }
+
     public void saveRewards(QuestDefinition quest) {
         if (quest.getRewards() == null) return;
-        try (Connection conn = databaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("REPLACE INTO biologist_rewards (quest, items) VALUES (?, ?)");
-        ) {
-            Type type = new TypeToken<List<ItemStack>>(){}.getType();
-            String json = gson.toJson(quest.getRewards(), type);
-            ps.setString(1, quest.getId());
-            ps.setString(2, json);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try (Connection conn = databaseManager.getConnection();
+                 PreparedStatement ps = conn.prepareStatement("REPLACE INTO biologist_rewards (quest, items) VALUES (?, ?)");
+            ) {
+                Type type = new TypeToken<List<ItemStack>>(){}.getType();
+                String json = gson.toJson(quest.getRewards(), type);
+                ps.setString(1, quest.getId());
+                ps.setString(2, json);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
