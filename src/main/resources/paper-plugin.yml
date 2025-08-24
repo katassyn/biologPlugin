@@ -1,0 +1,4 @@
+name: biologPlugin
+version: '1.0-SNAPSHOT'
+main: org.maks.biologPlugin.BiologPlugin
+api-version: '1.20'
