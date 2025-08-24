@@ -49,11 +49,12 @@ public class QuestDefinitionManager {
                 }
             }
             double chance = qSec.getDouble("chance");
+            double dropChance = qSec.getDouble("drop_chance", 1.0);
             int amount = qSec.getInt("amount");
             Material itemMat = Material.matchMaterial(qSec.getString("item_id", "PAPER"));
             String itemName = qSec.getString("item_name", "");
             String itemLore = qSec.getString("item_lore", "");
-            QuestDefinition quest = new QuestDefinition(id, name, desc, mobs, chance, amount, itemMat, itemName, itemLore);
+            QuestDefinition quest = new QuestDefinition(id, name, desc, mobs, chance, dropChance, amount, itemMat, itemName, itemLore);
             quests.put(id, quest);
         }
     }

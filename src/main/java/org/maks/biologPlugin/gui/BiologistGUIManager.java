@@ -71,7 +71,6 @@ public class BiologistGUIManager implements Listener {
         for (String mob : quest.getMobs().values()) {
             lore.add(ChatColor.GRAY + "- " + mob);
         }
-        lore.add(ChatColor.GREEN + "Click to accept");
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         questItem.setItemMeta(meta);
@@ -110,14 +109,16 @@ public class BiologistGUIManager implements Listener {
         for (String mob : quest.getMobs().values()) {
             lore.add(ChatColor.GRAY + "- " + mob);
         }
-
-        lore.add(ChatColor.GREEN + "Submit item in slot 22");
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         questItem.setItemMeta(meta);
         inv.setItem(13, questItem);
 
-        inv.setItem(22, new ItemStack(Material.AIR));
+        ItemStack submit = new ItemStack(Material.LIME_WOOL);
+        ItemMeta sm = submit.getItemMeta();
+        sm.setDisplayName(ChatColor.GREEN + "Submit Item");
+        submit.setItemMeta(sm);
+        inv.setItem(22, submit);
 
         player.openInventory(inv);
     }
@@ -138,21 +139,11 @@ public class BiologistGUIManager implements Listener {
             return;
         }
         if (!title.equals(ChatColor.DARK_GREEN + "Biologist")) return;
-        if (e.getRawSlot() != 22) {
-            e.setCancelled(true);
-            return;
-        }
-        ItemStack item = e.getCurrentItem();
-        if (item == null || item.getType() == Material.AIR) {
-            e.setCancelled(true);
-            return;
-        }
         e.setCancelled(true);
-        e.setCurrentItem(null);
+        if (e.getRawSlot() != 22) return;
         questManager.getData(player, data -> {
             QuestDefinition quest = questDefinitionManager.getQuest(data.getQuestId());
             if (quest == null || !data.isAccepted()) {
-                player.getInventory().addItem(item);
                 return;
             }
             // cooldown
@@ -160,19 +151,25 @@ public class BiologistGUIManager implements Listener {
                 long remaining = 24 * 60 * 60 * 1000L - (System.currentTimeMillis() - data.getLastSubmission());
                 long hours = remaining / (1000 * 60 * 60);
                 player.sendMessage(ChatColor.RED + "You must wait " + hours + "h before submitting again.");
-                player.getInventory().addItem(item);
                 return;
             }
-            // validation
-            ItemMeta meta = item.getItemMeta();
-            if (item.getType() != quest.getItemMaterial() || meta == null ||
-                    !meta.hasDisplayName() || !meta.getDisplayName().equals(ChatColor.GOLD + quest.getItemName()) ||
-                    meta.getLore() == null || meta.getLore().isEmpty() || !meta.getLore().get(0).equals(ChatColor.GRAY + quest.getItemLore()) ||
-                    !meta.hasEnchant(Enchantment.DURABILITY) || meta.getEnchantLevel(Enchantment.DURABILITY) < 10) {
-                player.sendMessage(ChatColor.RED + "This item is not suitable for the Biologist.");
-                player.getInventory().addItem(item);
+            // build required item
+            ItemStack required = new ItemStack(quest.getItemMaterial());
+            ItemMeta meta = required.getItemMeta();
+            meta.setDisplayName(ChatColor.GOLD + quest.getItemName());
+            meta.setLore(Collections.singletonList(ChatColor.GRAY + quest.getItemLore()));
+            meta.addEnchant(Enchantment.DURABILITY, 10, true);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+            meta.setUnbreakable(true);
+            required.setItemMeta(meta);
+
+            if (!player.getInventory().containsAtLeast(required, 1)) {
+                player.sendMessage(ChatColor.RED + "You don't have the required item for the Biologist.");
                 return;
             }
+
+            player.getInventory().removeItem(required);
+
             boolean success = random.nextDouble() <= quest.getChance();
             data.setLastSubmission(System.currentTimeMillis());
             if (success) {
@@ -191,18 +188,23 @@ public class BiologistGUIManager implements Listener {
                         data.setAccepted(false);
                         player.sendMessage(ChatColor.GOLD + "Quest completed! Next quest available.");
                         openAccept(player, data);
+                        questManager.saveData(data);
+                        return;
                     } else {
                         data.setQuestId(null);
                         data.setProgress(0);
                         data.setAccepted(false);
                         player.sendMessage(ChatColor.GOLD + "Quest completed! You finished all quests.");
                         player.closeInventory();
+                        questManager.saveData(data);
+                        return;
                     }
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "Biologist rejected your item.");
             }
             questManager.saveData(data);
+            openProgress(player, data);
         });
     }
 }
