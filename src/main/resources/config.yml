@@ -236,80 +236,79 @@ quests:
     item_name: "Death Knight Seal"
     item_lore: "Final specimen completing all research"
 
-# Quest completion buffs configuration
 quest_buffs:
   quest1:
     flat_dmg: 10
-    flat_hp: 50
+    flat_hp: 10
     multi_dmg: 0.0
     multi_hp: 0.0
   quest2:
-    flat_dmg: 15
-    flat_hp: 75
+    flat_dmg: 10
+    flat_hp: 25
     multi_dmg: 0.0
     multi_hp: 0.0
   quest3:
-    flat_dmg: 20
-    flat_hp: 100
+    flat_dmg: 0
+    flat_hp: 0
     multi_dmg: 0.05
     multi_hp: 0.05
   quest4:
-    flat_dmg: 25
-    flat_hp: 125
+    flat_dmg: 30
+    flat_hp: 30
     multi_dmg: 0.0
     multi_hp: 0.0
   quest5:
-    flat_dmg: 30
-    flat_hp: 150
+    flat_dmg: 50
+    flat_hp: 0
     multi_dmg: 0.1
-    multi_hp: 0.1
+    multi_hp: 0.0
   quest6:
-    flat_dmg: 40
-    flat_hp: 200
+    flat_dmg: 50
+    flat_hp: 30
     multi_dmg: 0.0
     multi_hp: 0.0
   quest7:
-    flat_dmg: 50
-    flat_hp: 250
-    multi_dmg: 0.15
-    multi_hp: 0.15
-  quest8:
     flat_dmg: 60
-    flat_hp: 300
+    flat_hp: 0
+    multi_dmg: 0.15
+    multi_hp: 0.0
+  quest8:
+    flat_dmg: 0
+    flat_hp: 50
     multi_dmg: 0.0
     multi_hp: 0.0
   quest9:
     flat_dmg: 75
-    flat_hp: 375
-    multi_dmg: 0.2
-    multi_hp: 0.2
+    flat_hp: 0
+    multi_dmg: 0.1
+    multi_hp: 0.1
   quest10:
     flat_dmg: 90
-    flat_hp: 450
+    flat_hp: 50
     multi_dmg: 0.0
     multi_hp: 0.0
   quest11:
-    flat_dmg: 110
-    flat_hp: 550
-    multi_dmg: 0.25
-    multi_hp: 0.25
-  quest12:
-    flat_dmg: 130
-    flat_hp: 650
+    flat_dmg: 100
+    flat_hp: 100
     multi_dmg: 0.0
+    multi_hp: 0.0
+  quest12:
+    flat_dmg: 250
+    flat_hp: 0
+    multi_dmg: 0.2
     multi_hp: 0.0
   quest13:
-    flat_dmg: 150
-    flat_hp: 750
-    multi_dmg: 0.3
+    flat_dmg: 300
+    flat_hp: 100
+    multi_dmg: 0.0
     multi_hp: 0.3
   quest14:
-    flat_dmg: 175
-    flat_hp: 875
-    multi_dmg: 0.0
-    multi_hp: 0.0
+    flat_dmg: 500
+    flat_hp: 250
+    multi_dmg: 0.3
+    multi_hp: 0.3
   quest15:
-    flat_dmg: 200
+    flat_dmg: 1000
     flat_hp: 1000
     multi_dmg: 0.5
-    multi_hp: 0.4
+    multi_hp: 0.5
