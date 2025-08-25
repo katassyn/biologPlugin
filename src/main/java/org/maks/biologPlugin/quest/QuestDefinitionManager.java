@@ -1,6 +1,7 @@
 package org.maks.biologPlugin.quest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,19 +9,26 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.maks.biologPlugin.db.DatabaseManager;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.Base64;
 
 public class QuestDefinitionManager {
     private final LinkedHashMap<String, QuestDefinition> quests = new LinkedHashMap<>();
     private final DatabaseManager databaseManager;
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
     private final JavaPlugin plugin;
 
     public QuestDefinitionManager(JavaPlugin plugin, DatabaseManager databaseManager, FileConfiguration config) {
@@ -65,11 +73,10 @@ public class QuestDefinitionManager {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String questId = rs.getString("quest");
-                String json = rs.getString("items");
+                String serializedData = rs.getString("items");
                 QuestDefinition quest = quests.get(questId);
-                if (quest != null) {
-                    Type type = new TypeToken<List<ItemStack>>(){}.getType();
-                    List<ItemStack> items = gson.fromJson(json, type);
+                if (quest != null && serializedData != null && !serializedData.isEmpty()) {
+                    List<ItemStack> items = deserializeItems(serializedData);
                     quest.setRewards(items);
                 }
             }
@@ -88,6 +95,44 @@ public class QuestDefinitionManager {
 
     public Map<String, QuestDefinition> getQuestMap() {
         return quests;
+    }
+
+    // Serialize ItemStack list to Base64 string
+    private String serializeItems(List<ItemStack> items) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream)) {
+            
+            dataOutput.writeInt(items.size());
+            for (ItemStack item : items) {
+                dataOutput.writeObject(item);
+            }
+            
+            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to serialize rewards: " + e.getMessage());
+            return "";
+        }
+    }
+
+    // Deserialize Base64 string to ItemStack list
+    private List<ItemStack> deserializeItems(String data) {
+        if (data == null || data.isEmpty()) return new ArrayList<>();
+        
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream)) {
+            
+            int size = dataInput.readInt();
+            List<ItemStack> items = new ArrayList<>(size);
+            
+            for (int i = 0; i < size; i++) {
+                items.add((ItemStack) dataInput.readObject());
+            }
+            
+            return items;
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to deserialize rewards: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public QuestDefinition getFirstQuest() {
@@ -111,10 +156,9 @@ public class QuestDefinitionManager {
             try (Connection conn = databaseManager.getConnection();
                  PreparedStatement ps = conn.prepareStatement("REPLACE INTO biologist_rewards (quest, items) VALUES (?, ?)");
             ) {
-                Type type = new TypeToken<List<ItemStack>>(){}.getType();
-                String json = gson.toJson(quest.getRewards(), type);
+                String serializedData = serializeItems(quest.getRewards());
                 ps.setString(1, quest.getId());
-                ps.setString(2, json);
+                ps.setString(2, serializedData);
                 ps.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();

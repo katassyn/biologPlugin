@@ -12,7 +12,7 @@ commands:
 permissions:
   biolog.use:
     description: Allows using /biolog
-    default: true
+    default: op
   biolog.admin:
     description: Allows using /biologadmin
     default: op

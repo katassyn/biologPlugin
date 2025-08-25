@@ -26,6 +26,7 @@ public class QuestManager {
                  Statement st = conn.createStatement()) {
                 st.executeUpdate("CREATE TABLE IF NOT EXISTS biologist_players (uuid VARCHAR(36) PRIMARY KEY, quest VARCHAR(64), progress INT, last_submission BIGINT, accepted TINYINT(1))");
                 st.executeUpdate("CREATE TABLE IF NOT EXISTS biologist_rewards (quest VARCHAR(64) PRIMARY KEY, items TEXT)");
+                st.executeUpdate("CREATE TABLE IF NOT EXISTS biologist_buffs (player VARCHAR(36) PRIMARY KEY, flat_dmg DOUBLE DEFAULT 0, flat_hp DOUBLE DEFAULT 0, multi_dmg DOUBLE DEFAULT 0, multi_hp DOUBLE DEFAULT 0, completed_quests TEXT DEFAULT '')");
             } catch (SQLException e) {
                 e.printStackTrace();
             }

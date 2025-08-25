@@ -32,7 +32,10 @@ public class BiologistAdminGUI implements Listener {
         for (int i = 0; i < inv.getSize(); i++) {
             inv.setItem(i, filler);
         }
-        // Slots 10-16 allow items
+        // Slots 10-16 allow items - clear them first
+        for (int i = 10; i <= 16; i++) {
+            inv.setItem(i, null);
+        }
         if (quest.getRewards() != null) {
             int slot = 10;
             for (ItemStack item : quest.getRewards()) {
@@ -58,10 +61,17 @@ public class BiologistAdminGUI implements Listener {
         Player player = (Player) e.getWhoClicked();
         String title = e.getView().getTitle();
         if (!title.startsWith(ChatColor.DARK_AQUA + "Edit Rewards:")) return;
+        
+        // Allow player inventory interactions
+        if (e.getRawSlot() >= e.getInventory().getSize()) {
+            return; // Don't cancel clicks in player inventory
+        }
+        
         e.setCancelled(true);
         Inventory inv = e.getInventory();
         if (e.getRawSlot() >= 10 && e.getRawSlot() <= 16) {
-            e.setCancelled(false); // allow editing
+            // Allow placing/removing items in reward slots
+            e.setCancelled(false);
             return;
         }
         QuestDefinition quest = questDefinitionManager.getQuest(title.substring((ChatColor.DARK_AQUA + "Edit Rewards:").length()));

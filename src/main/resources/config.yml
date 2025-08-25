@@ -5,29 +5,311 @@ mysql:
   username: user
   password: pass
 
-debug_drop: false
+debug_drop: true
 
 quests:
   quest1:
-    name: "Collect Wolf Fangs"
-    desc: "Zabij mistyczne wilki i przynieś ich kły."
+    name: "Undead Research"
+    desc: "Study the undead creatures in the early territories. Collect samples for analysis."
     mobs:
-      - mythic_wolf:Mystic Wolf
-      - mythic_alpha:Alpha Wolf
-    chance: 0.7
-    drop_chance: 0.5
-    amount: 20
+      - _Undead_Villager_:Undead Villager
+      - _Undead_Knight_:Undead Knight
+      - _arisen_warrior:Arisen Warrior
+      - _arisen_archer:Arisen Archer
+    chance: 0.8
+    drop_chance: 0.1
+    amount: 5
     item_id: BONE
-    item_name: "Wolf Fang"
-    item_lore: "A fang destined for the Biologist"
+    item_name: "Undead Essence"
+    item_lore: "A dark essence from undead creatures"
 
-cooldown_item:
-  id: BOWL
-  display: "§6Biologist Potion"
-  enchant: DURABILITY:10
-  lore:
-    - "§o§7Right click to reset Biologist Cooldown"
-  options:
-    HideFlags: true
-    HideAttributes: true
-    Unbreakable: true
+  quest2:
+    name: "Desert Expedition"
+    desc: "Research the mysterious priests and desert creatures of the ancient lands."
+    mobs:
+      - _nefertari_snooper:Nefertari Snooper
+      - _nefertari_priest:Nefertari Priest
+    chance: 0.7
+    drop_chance: 0.15
+    amount: 10
+    item_id: PAPER
+    item_name: "Ancient Papyrus"
+    item_lore: "Contains knowledge of desert civilizations"
+
+  quest3:
+    name: "Beast Investigation"
+    desc: "Examine the fierce beasts and berserks dwelling in the bog territories."
+    mobs:
+      - bog_beast:Bog Beast
+      - black_furred_berserk:Black Furred Berserk
+      - black_furred_piercer:Black Furred Piercer
+      - black_furred_mauler:Black Furred Mauler
+      - talking_sekeleton:Talking Skeleton
+    chance: 0.65
+    drop_chance: 0.1
+    amount: 12
+    item_id: LEATHER
+    item_name: "Beast Hide"
+    item_lore: "Tough hide from bog creatures"
+
+  quest4:
+    name: "Dragon Clan Analysis"
+    desc: "Study the soulless dragon warriors and their military commanders."
+    mobs:
+      - soulless_dragon_warrior:Soulless Dragon Warrior
+      - soulless_dragon_archer:Soulless Dragon Archer
+      - dragon_berserk_thug:Dragon Berserk Thug
+      - dragon_brood_militarist:Dragon Brood Militarist
+      - commander_emberwing:Commander Emberwing
+    chance: 0.6
+    drop_chance: 0.15
+    amount: 15
+    item_id: DRAGON_BREATH
+    item_name: "Dragon Scale"
+    item_lore: "Scales from the dragon clan warriors"
+
+  quest5:
+    name: "Norse Expedition"
+    desc: "Investigate the frost wolves and norse creatures in the frozen wilderness."
+    mobs:
+      - norse_gnome:Norse Gnome
+      - frost_wolf_agitator:Frost Wolf Agitator
+      - frost_catcher:Frost Catcher
+      - frost_paw:Frost Paw
+    chance: 0.55
+    drop_chance: 0.3
+    amount: 18
+    item_id: SNOWBALL
+    item_name: "Frost Crystal"
+    item_lore: "A crystal formed in the coldest regions"
+
+  quest6:
+    name: "Satyr Territory Survey"
+    desc: "Research the horned satyrs and cyclops inhabiting the mountainous regions."
+    mobs:
+      - horned_satyr_warrior:Horned Satyr Warrior
+      - horned_satyr_archer:Horned Satyr Archer
+      - drunken_cyclops:Drunken Cyclops
+      - horned_satyr_general:Horned Satyr General
+    chance: 0.5
+    drop_chance: 0.1
+    amount: 20
+    item_id: GOAT_HORN
+    item_name: "Satyr Horn"
+    item_lore: "Horn from the mountain satyrs"
+
+  quest7:
+    name: "Gorgon Specimen Collection"
+    desc: "Collect specimens from gorgon soldiers and jellyfish for advanced studies."
+    mobs:
+      - gorgon_soldier:Gorgon Soldier
+      - jellyfish:Jellyfish
+      - gorgon_heretic:Gorgon Heretic
+      - high_priest_baran:High Priest Baran
+    chance: 0.45
+    drop_chance: 0.05
+    amount: 15
+    item_id: SLIME_BALL
+    item_name: "Gorgon Sample"
+    item_lore: "Preserved biological sample"
+
+  quest8:
+    name: "Mechanical Analysis"
+    desc: "Study the mechanical guards and engineering marvels of advanced territories."
+    mobs:
+      - longhelm_evil_guard:Longhelm Evil Guard
+      - walking_saw:Walking Saw
+      - technik_engineer:Technik Engineer
+      - t_1000:T-1000
+      - high_priest_danzo:High Priest Danzo
+    chance: 0.4
+    drop_chance: 0.05
+    amount: 14
+    item_id: IRON_INGOT
+    item_name: "Mechanical Part"
+    item_lore: "Component from mechanical creatures"
+
+  quest9:
+    name: "Temple Mysteries"
+    desc: "Investigate the temple mummies and ancient guardians."
+    mobs:
+      - temple_mummy:Temple Mummy
+      - furious_fiend:Furious Fiend
+      - crushing_monster:Crushing Monster
+      - protector_life_death:Protector of Life and Death
+    chance: 0.35
+    drop_chance: 0.05
+    amount: 16
+    item_id: GOLDEN_APPLE
+    item_name: "Ancient Relic"
+    item_lore: "A mysterious artifact from temple ruins"
+
+  quest10:
+    name: "Serpent Research"
+    desc: "Research serpent fighters and scarab creatures of the deep desert."
+    mobs:
+      - serpent_fighter:Serpent Fighter
+      - serpent_spitter:Serpent Spitter
+      - scarab_knephre:Scarab Knephre
+    chance: 0.3
+    drop_chance: 0.05
+    amount: 12
+    item_id: EMERALD
+    item_name: "Serpent Venom Sac"
+    item_lore: "Venom from dangerous serpents"
+
+  quest11:
+    name: "Demon Investigation"
+    desc: "Study the fire demons and shadow creatures in the underworld regions."
+    mobs:
+      - LunkyFireDemon:Fire Demon
+      - ShadowGazer:Shadow Gazer
+      - HungrynorseWolf:Hungry Norse Wolf
+      - ShadowNorseman:Shadow Norseman
+      - DemonWarden:Demon Warden
+    chance: 0.25
+    drop_chance: 0.05
+    amount: 20
+    item_id: BLAZE_ROD
+    item_name: "Demon Essence"
+    item_lore: "Pure essence from demonic entities"
+
+  quest12:
+    name: "Toltec Civilization Study"
+    desc: "Research the obstinate toltec warriors and their ancient culture."
+    mobs:
+      - obstinate_toltec_warrior:Toltec Warrior
+      - obstinate_toltec_hunter:Toltec Hunter
+      - obstinate_toltec_shaman:Toltec Shaman
+      - quacking_orbax:Quacking Orbax
+    chance: 0.22
+    drop_chance: 0.03
+    amount: 22
+    item_id: FEATHER
+    item_name: "Toltec Artifact"
+    item_lore: "Artifact from the toltec civilization"
+
+  quest13:
+    name: "Shadow Realm Exploration"
+    desc: "Explore the shadow realm and study its dangerous inhabitants."
+    mobs:
+      - shade_crawler:Shade Crawler
+      - shadow_gazer:Shadow Gazer
+      - soul_collector:Soul Collector
+      - adamant_lava_hound:Adamant Lava Hound
+      - elite_imperial_swordsman:Elite Imperial Swordsman
+    chance: 0.2
+    drop_chance: 0.03
+    amount: 20
+    item_id: ENDER_PEARL
+    item_name: "Shadow Fragment"
+    item_lore: "Fragment from the shadow realm"
+
+  quest14:
+    name: "Twisted Nature Study"
+    desc: "Research the twisted roots and corrupted nature of Tywil."
+    mobs:
+      - twisted_roots:Twisted Roots
+      - leechbeast:Leechbeast
+      - orbax:Orbax
+      - thunder_beech:Thunder Beech
+    chance: 0.18
+    drop_chance: 0.03
+    amount: 16
+    item_id: VINE
+    item_name: "Corrupted Bark"
+    item_lore: "Bark from twisted nature"
+
+  quest15:
+    name: "Death Knight Research"
+    desc: "Final research on the death knights and their eternal watch."
+    mobs:
+      - mean_souls:Mean Souls
+      - cold_skeleton_warrior:Cold Skeleton Warrior
+      - cold_skeleton_archer:Cold Skeleton Archer
+      - cold_death_knight:Cold Death Knight
+      - death_knight_of_the_watch:Death Knight of the Watch
+    chance: 0.15
+    drop_chance: 0.01
+    amount: 5
+    item_id: WITHER_SKELETON_SKULL
+    item_name: "Death Knight Seal"
+    item_lore: "Final specimen completing all research"
+
+# Quest completion buffs configuration
+quest_buffs:
+  quest1:
+    flat_dmg: 10
+    flat_hp: 50
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest2:
+    flat_dmg: 15
+    flat_hp: 75
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest3:
+    flat_dmg: 20
+    flat_hp: 100
+    multi_dmg: 0.05
+    multi_hp: 0.05
+  quest4:
+    flat_dmg: 25
+    flat_hp: 125
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest5:
+    flat_dmg: 30
+    flat_hp: 150
+    multi_dmg: 0.1
+    multi_hp: 0.1
+  quest6:
+    flat_dmg: 40
+    flat_hp: 200
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest7:
+    flat_dmg: 50
+    flat_hp: 250
+    multi_dmg: 0.15
+    multi_hp: 0.15
+  quest8:
+    flat_dmg: 60
+    flat_hp: 300
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest9:
+    flat_dmg: 75
+    flat_hp: 375
+    multi_dmg: 0.2
+    multi_hp: 0.2
+  quest10:
+    flat_dmg: 90
+    flat_hp: 450
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest11:
+    flat_dmg: 110
+    flat_hp: 550
+    multi_dmg: 0.25
+    multi_hp: 0.25
+  quest12:
+    flat_dmg: 130
+    flat_hp: 650
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest13:
+    flat_dmg: 150
+    flat_hp: 750
+    multi_dmg: 0.3
+    multi_hp: 0.3
+  quest14:
+    flat_dmg: 175
+    flat_hp: 875
+    multi_dmg: 0.0
+    multi_hp: 0.0
+  quest15:
+    flat_dmg: 200
+    flat_hp: 1000
+    multi_dmg: 0.5
+    multi_hp: 0.4

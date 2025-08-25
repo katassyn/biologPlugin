@@ -11,7 +11,7 @@ public class DatabaseManager {
 
     public DatabaseManager(String host, int port, String database, String username, String password) {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&characterEncoding=utf8");
+        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&characterEncoding=utf8&useUnicode=true&serverTimezone=UTC");
         config.setUsername(username);
         config.setPassword(password);
         config.setMaximumPoolSize(10);
