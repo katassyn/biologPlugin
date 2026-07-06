@@ -16,6 +16,7 @@ import org.maks.biologPlugin.quest.QuestDefinition;
 import org.maks.biologPlugin.quest.QuestDefinitionManager;
 import org.maks.biologPlugin.quest.QuestManager;
 import org.maks.biologPlugin.buff.BuffManager;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
 
@@ -23,12 +24,14 @@ public class BiologistGUIManager implements Listener {
     private final QuestManager questManager;
     private final QuestDefinitionManager questDefinitionManager;
     private final BuffManager buffManager;
+    private final FileConfiguration config;
     private final Random random = new Random();
 
-    public BiologistGUIManager(QuestManager questManager, QuestDefinitionManager questDefinitionManager, BuffManager buffManager) {
+    public BiologistGUIManager(QuestManager questManager, QuestDefinitionManager questDefinitionManager, BuffManager buffManager, FileConfiguration config) {
         this.questManager = questManager;
         this.questDefinitionManager = questDefinitionManager;
         this.buffManager = buffManager;
+        this.config = config;
     }
 
     public void open(Player player) {
@@ -83,6 +86,28 @@ public class BiologistGUIManager implements Listener {
             lore.add(ChatColor.GRAY + "- " + mob);
         }
         lore.add(ChatColor.YELLOW + "Required: " + quest.getAmount());
+        lore.add("");
+        lore.add(ChatColor.GOLD + "Mission Completion Bonuses:");
+        
+        // Get buff information from config
+        String buffPath = "quest_buffs." + quest.getId();
+        double flatDmg = config.getDouble(buffPath + ".flat_dmg", 0);
+        double flatHp = config.getDouble(buffPath + ".flat_hp", 0);
+        double multiDmg = config.getDouble(buffPath + ".multi_dmg", 0);
+        double multiHp = config.getDouble(buffPath + ".multi_hp", 0);
+        
+        if (flatDmg > 0) {
+            lore.add(ChatColor.GREEN + "➤ +" + (int)flatDmg + " Attack Damage (Permanent)");
+        }
+        if (flatHp > 0) {
+            lore.add(ChatColor.RED + "➤ +" + (int)flatHp + " Max Health (Permanent)");
+        }
+        if (multiDmg > 0) {
+            lore.add(ChatColor.GREEN + "➤ +" + (int)(multiDmg * 100) + "% Damage Multiplier (Permanent)");
+        }
+        if (multiHp > 0) {
+            lore.add(ChatColor.RED + "➤ +" + (int)(multiHp * 100) + "% Health Multiplier (Permanent)");
+        }
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         questItem.setItemMeta(meta);
@@ -175,20 +200,72 @@ public class BiologistGUIManager implements Listener {
             inv.setItem(46 + i, segment); // Start from slot 46 instead of 45
         }
 
-        // Add rewards preview at bottom
+        // Add "Quest Rewards >>>" header
+        ItemStack rewardsHeader = new ItemStack(Material.GOLD_INGOT);
+        ItemMeta headerMeta = rewardsHeader.getItemMeta();
+        headerMeta.setDisplayName(ChatColor.GOLD + "Quest Rewards >>>");
+        List<String> headerLore = new ArrayList<>();
+        headerLore.add(ChatColor.YELLOW + "All rewards for quest completion!");
+        headerMeta.setLore(headerLore);
+        rewardsHeader.setItemMeta(headerMeta);
+        inv.setItem(27, rewardsHeader);
+        
+        // Add mission completion bonuses info
+        ItemStack bonusesInfo = new ItemStack(Material.ENCHANTED_BOOK);
+        ItemMeta bonusesMeta = bonusesInfo.getItemMeta();
+        bonusesMeta.setDisplayName(ChatColor.GOLD + "Attribute Bonuses");
+        List<String> bonusLore = new ArrayList<>();
+        
+        // Get buff information from config
+        String buffPath = "quest_buffs." + quest.getId();
+        double flatDmg = config.getDouble(buffPath + ".flat_dmg", 0);
+        double flatHp = config.getDouble(buffPath + ".flat_hp", 0);
+        double multiDmg = config.getDouble(buffPath + ".multi_dmg", 0);
+        double multiHp = config.getDouble(buffPath + ".multi_hp", 0);
+        
+        bonusLore.add(ChatColor.YELLOW + " Permanent bonuses:");
+        if (flatDmg > 0) {
+            bonusLore.add(ChatColor.GREEN + "➤ +" + (int)flatDmg + " Attack Damage");
+        }
+        if (flatHp > 0) {
+            bonusLore.add(ChatColor.RED + "➤ +" + (int)flatHp + " Max Health");
+        }
+        if (multiDmg > 0) {
+            bonusLore.add(ChatColor.GREEN + "➤ +" + (int)(multiDmg * 100) + "% Damage Multiplier");
+        }
+        if (multiHp > 0) {
+            bonusLore.add(ChatColor.RED + "➤ +" + (int)(multiHp * 100) + "% Health Multiplier");
+        }
+        
+        if (flatDmg == 0 && flatHp == 0 && multiDmg == 0 && multiHp == 0) {
+            bonusLore.add(ChatColor.GRAY + "No attribute bonuses for this quest");
+        } else {
+            bonusLore.add("");
+            bonusLore.add(ChatColor.YELLOW + "Persist through death and logout!");
+        }
+        
+        bonusesMeta.setLore(bonusLore);
+        bonusesMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        bonusesInfo.setItemMeta(bonusesMeta);
+        inv.setItem(28, bonusesInfo);
+        
+        // Add item rewards
         if (quest.getRewards() != null && !quest.getRewards().isEmpty()) {
-            // Add "Possible Rewards >>" header
-            ItemStack rewardsHeader = new ItemStack(Material.GOLD_INGOT);
-            ItemMeta headerMeta = rewardsHeader.getItemMeta();
-            headerMeta.setDisplayName(ChatColor.GOLD + "Possible Rewards >>");
-            rewardsHeader.setItemMeta(headerMeta);
-            inv.setItem(27, rewardsHeader);
-            
-            int rewardSlot = 28;
+            int rewardSlot = 29;
             for (ItemStack reward : quest.getRewards()) {
-                if (rewardSlot <= 34) {
-                    ItemStack previewReward = reward.clone();
-                    inv.setItem(rewardSlot++, previewReward);
+                if (rewardSlot <= 35) {
+                    ItemStack guaranteedReward = reward.clone();
+//                    // Add lore to show it's guaranteed
+//                    ItemMeta rewardMeta = guaranteedReward.getItemMeta();
+//                    if (rewardMeta != null) {
+//                        List<String> rewardLore = rewardMeta.getLore();
+//                        if (rewardLore == null) rewardLore = new ArrayList<>();
+//                        rewardLore.add("");
+//                        rewardLore.add(ChatColor.GOLD + "GUARANTEED reward!");
+//                        rewardMeta.setLore(rewardLore);
+//                        guaranteedReward.setItemMeta(rewardMeta);
+//                    }
+                    inv.setItem(rewardSlot++, guaranteedReward);
                 }
             }
         }
@@ -264,6 +341,12 @@ public class BiologistGUIManager implements Listener {
                     
                     // Apply quest completion buffs
                     buffManager.addQuestBuff(player, quest.getId());
+                    
+                    // Send chat notification to all online players
+                    String completionMessage = ChatColor.YELLOW + "Player " + ChatColor.GOLD + player.getName() + 
+                            ChatColor.YELLOW + " finished Biologist quest " + ChatColor.GOLD + quest.getId() + 
+                            ChatColor.YELLOW + ": \"" + ChatColor.WHITE + quest.getName() + ChatColor.YELLOW + "\"";
+                    Bukkit.broadcastMessage(completionMessage);
                     
                     QuestDefinition next = questDefinitionManager.getNextQuest(quest.getId());
                     if (next != null) {

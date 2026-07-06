@@ -14,7 +14,8 @@ public class DatabaseManager {
         config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&characterEncoding=utf8&useUnicode=true&serverTimezone=UTC");
         config.setUsername(username);
         config.setPassword(password);
-        config.setMaximumPoolSize(10);
+        config.setMaximumPoolSize(20); // Increased for 30+ players
+        config.setMinimumIdle(10); // Biology plugin needs stable connections
         this.dataSource = new HikariDataSource(config);
     }
 

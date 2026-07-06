@@ -26,6 +26,7 @@ import org.maks.biologPlugin.quest.QuestDefinitionManager;
 import org.maks.biologPlugin.quest.QuestManager;
 import org.maks.biologPlugin.command.BiologistAdminCommand;
 import org.maks.biologPlugin.buff.BuffManager;
+import com.maks.trinketsplugin.TrinketsStatsAPI;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public final class BiologPlugin extends JavaPlugin implements Listener {
         buffManager = new BuffManager(this, databaseManager, config);
         
         Map<String, QuestDefinition> questMap = questDefinitionManager.getQuestMap();
-        BiologistGUIManager guiManager = new BiologistGUIManager(questManager, questDefinitionManager, buffManager);
+        BiologistGUIManager guiManager = new BiologistGUIManager(questManager, questDefinitionManager, buffManager, config);
 
         BiologistAdminGUI adminGUI = new BiologistAdminGUI(questDefinitionManager);
 
@@ -124,9 +125,17 @@ public final class BiologPlugin extends JavaPlugin implements Listener {
                 return;
             }
 
-            boolean drop = random.nextDouble() <= quest.getDropChance();
+            // Calculate effective drop chance with Biologist Time bonus from trinkets
+            double effectiveDropChance = quest.getDropChance();
+            if (TrinketsStatsAPI.isAvailable()) {
+                // getBiologistChanceDecimal returns percentage as decimal (e.g., 3% -> 0.03)
+                effectiveDropChance += TrinketsStatsAPI.getBiologistChanceDecimal(finalKiller);
+            }
+
+            boolean drop = random.nextDouble() <= effectiveDropChance;
             if (debugDrop) {
                 getLogger().info("Biologist drop roll for mob " + mobName + " killed by " + finalKiller.getName() +
+                        " (base: " + quest.getDropChance() + ", effective: " + effectiveDropChance + ")" +
                         (drop ? " succeeded" : " failed"));
             }
             if (!drop) return;
